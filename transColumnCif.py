@@ -1,7 +1,8 @@
 # Column tranpose cipher (for dummies)
 
-import pyperclip
+import pyperclip # Copy the results to the clipboard
 
+# Main function just gets a message and a key and codes it with that key
 def main():
     msg = input('Enter your message: ')
     key = int(input('Enter your numeric key: '))
@@ -19,6 +20,7 @@ def remove_spaces(msg):
             new_msg += symbol
     return new_msg
 
+# Creates blocks of 5 letters of the coded message
 def exit(crypto):
     BLOCK = 5 # Number of letter contained in each block
     text = ''
@@ -28,6 +30,7 @@ def exit(crypto):
         else:
             text += crypto[i] + ' '
     return text
+
 
 def cipher(msg, key):
     # Each chain is a column in the list
@@ -49,5 +52,3 @@ def cipher(msg, key):
 
 if __name__ == '__main__':
     main()
-
-# cipher('elartedelamedicinaconsisteenentreteneralpacientemientraslanaturalezacuralaenfermedad', 7)

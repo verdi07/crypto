@@ -1,8 +1,8 @@
-# Test 1 of the crypto book
+# Program that codes an entered message with the cesar method
 
+import pyperclip # Copy to the clipboard
 
-import pyperclip
-
+# Text
 CLARO = 'abcdefghijklmnopqrstuvwxyz '
 CIFRADO = 'ZYXWVUTSRQPONMLKJIHGFEDCBA '
 
@@ -12,7 +12,7 @@ exit = ''
 # Enter the plain text
 text = input('Enter your text: ')
 
-# Execute the cyphring
+# Execute the ciphring
 for symbol in text.lower():
     if symbol in CLARO:
         indexe = CLARO.index(symbol)
