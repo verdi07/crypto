@@ -1,41 +1,71 @@
-# Software to detect spanish having a dictionary
+# Módulo para detectar si una cadena está en español
 
-# Define the alphabet
-caps = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-LETTERS = caps + caps.lower()
+# Para usarlo, escribe este código:
+#   import detectarEspanol
+#   detectarEspanol.es_espanol(cadena)  # devuelve True o False
+# Debe haber un fichero diccionario.txt en el mismo directorio
+# con todas las palabras del español, una por línea.
+# Puedes descargarlo de www.davidarboledas.es/python/diccionario.txt
+
+LETRAS_MAYUSCULAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+LETRAS = LETRAS_MAYUSCULAS + LETRAS_MAYUSCULAS.lower()
+LETRAS_Y_ESPACIOS = LETRAS + ' \t\n'
+
+def leer_diccionario():
+    archivo = open('diccionario.txt')
+    palabras_espanol = {}
+    for palabra in archivo.read().split('\n'):
+        palabras_espanol[palabra] = None
+    archivo.close()
+    return palabras_espanol
 
 
-# Get the dictionary from a file in this folder
-def read_dict():
-    folder = open('diccionario.txt')
-    spanish_words = {}
-    for word in folder.read().split('\n'):
-        spanish_words[word] = None
-    folder.close()
-    return spanish_words
+PALABRAS_ESPANOL = leer_diccionario()
 
-SPANISH_WORDS = read_dict()
+def porcentaje_palabras(mensaje):
+    mensaje = mensaje.upper()
+    letras =[]
+    for simbolo in mensaje:
+        if simbolo in LETRAS_Y_ESPACIOS:
+            letras.append(simbolo)
+    mensaje= ''.join(letras)
+    
+    posibles_palabras = mensaje.split()
+    
+    if posibles_palabras == []:
+        return 0.0 # No hay ninguna palabra
 
-# Remove non alghabet symbols
-def clean_text(msg):
-    letters = []
-    for symbol in msg:
-        if symbol in LETTERS:
-            letters.append(symbol)
-    return ''.join(letters)
+    encontradas = 0
+    for palabra in posibles_palabras:
+        if palabra in PALABRAS_ESPANOL:
+            encontradas += 1
+    return float(encontradas) / len(posibles_palabras)
 
-# Analyze if a text is in spanish, we can do this because
-# the words_longer_than_four_letters - text ratio should 
-# be around .7
-def is_spanish(msg, r_lexica = 0.5):
-    msg = clean_text(msg).upper()
-    length = len(msg)
-    text = ''
-    for word in SPANISH_WORDS:
-        if msg.find(word) != -1:
-            text += word
-    coef = len(text)/length
+
+def limpiar_texto(mensaje):
+    letras =[]
+    for simbolo in mensaje:
+        if simbolo in LETRAS:
+            letras.append(simbolo)
+    return ''.join(letras)
+
+
+def es_espanol(mensaje, r_lexica=0.50):
+    # Por defecto, se considera que el mensaje tiene sentido
+    # en castellano si Rlex >= 0,50
+    mensaje = limpiar_texto(mensaje).upper()
+    longitud = len(mensaje)
+    texto = ''
+    for palabra in PALABRAS_ESPANOL:
+        if mensaje.find(palabra) != -1:
+            texto += palabra
+    try:
+        coef = len(texto)/longitud
+    except ZeroDivisionError as err:
+        return (False, 0)
+    
     if coef >= r_lexica:
-        return True, coef
+        return (True, coef)
     else:
-        return False, coef        
+        return (False, coef)
+
